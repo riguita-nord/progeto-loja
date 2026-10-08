@@ -16,6 +16,8 @@ readonly BACKUP_DIR="${STATE_DIR}/backups"
 readonly LOG_DIR="/var/log/nord-hub"
 readonly NGINX_SITE="/etc/nginx/sites-available/nord-hub"
 readonly NGINX_ENABLED="/etc/nginx/sites-enabled/nord-hub"
+readonly NGINX_DEFAULT_SITE="/etc/nginx/sites-available/default"
+readonly NGINX_DEFAULT_ENABLED="/etc/nginx/sites-enabled/default"
 readonly SYSTEMD_UNIT="/etc/systemd/system/nord-hub.service"
 readonly EXPECTED_ORIGIN="https://github.com/riguita-nord/progeto-loja.git"
 readonly SOURCE_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
@@ -280,6 +282,7 @@ UNIT
 }
 
 install_nginx() {
+    local nginx_backup="" default_site_disabled=0
     if [[ -e "${NGINX_SITE}" ]]; then
         grep -Fq '# Managed by the Nord Hub installer.' "${NGINX_SITE}" \
             || fail "${NGINX_SITE} already exists and is not managed by Nord Hub; it was left untouched."
@@ -288,18 +291,25 @@ install_nginx() {
         elif [[ "$(readlink -f "${NGINX_ENABLED}")" != "${NGINX_SITE}" ]]; then
             fail "The Nginx site enable link conflicts with Nord Hub; it was left untouched."
         fi
-        nginx -t || fail "The existing Nord Hub Nginx configuration does not pass nginx -t."
-        systemctl enable nginx
-        systemctl reload nginx
-        return
-    fi
-    cat >"${NGINX_SITE}" <<NGINX
+        nginx_backup="$(mktemp)"
+        cp -a -- "${NGINX_SITE}" "${nginx_backup}"
+        sed -i -E \
+            -e 's/^([[:space:]]*listen[[:space:]]+80);$/\1 default_server;/' \
+            -e 's/^([[:space:]]*listen[[:space:]]+\[::\]:80);$/\1 default_server;/' \
+            "${NGINX_SITE}"
+        if ! grep -Fq 'listen 80 default_server;' "${NGINX_SITE}"; then
+            cp -a -- "${nginx_backup}" "${NGINX_SITE}"
+            rm -f -- "${nginx_backup}"
+            fail "Could not configure the Nord Hub site as the default HTTP server."
+        fi
+    else
+        cat >"${NGINX_SITE}" <<NGINX
 # Managed by the Nord Hub installer. Preserve this marker and file during manual edits.
 limit_req_zone \$binary_remote_addr zone=nordhub_auth:10m rate=10r/m;
 
     server {
-    listen 80;
-    listen [::]:80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
     server_name ${DOMAIN} localhost 127.0.0.1;
     server_tokens off;
 
@@ -372,11 +382,28 @@ limit_req_zone \$binary_remote_addr zone=nordhub_auth:10m rate=10r/m;
     }
 }
 NGINX
-    ln -s "${NGINX_SITE}" "${NGINX_ENABLED}"
+        ln -s "${NGINX_SITE}" "${NGINX_ENABLED}"
+    fi
+
+    if [[ -L "${NGINX_DEFAULT_ENABLED}" ]] \
+        && [[ "$(readlink -f "${NGINX_DEFAULT_ENABLED}")" == "${NGINX_DEFAULT_SITE}" ]]; then
+        rm -- "${NGINX_DEFAULT_ENABLED}"
+        default_site_disabled=1
+    fi
+
     if ! nginx -t; then
-        rm -f -- "${NGINX_ENABLED}" "${NGINX_SITE}"
+        if [[ -n "${nginx_backup}" ]]; then
+            cp -a -- "${nginx_backup}" "${NGINX_SITE}"
+            rm -f -- "${nginx_backup}"
+        else
+            rm -f -- "${NGINX_ENABLED}" "${NGINX_SITE}"
+        fi
+        if (( default_site_disabled )); then
+            ln -s "${NGINX_DEFAULT_SITE}" "${NGINX_DEFAULT_ENABLED}"
+        fi
         fail "Generated Nginx configuration did not pass nginx -t."
     fi
+    [[ -z "${nginx_backup}" ]] || rm -f -- "${nginx_backup}"
     systemctl enable nginx
     systemctl reload nginx
 }
@@ -397,6 +424,11 @@ wait_for_health() {
         sleep 2
     done
     return 1
+}
+
+verify_homepage() {
+    curl --fail --silent --show-error --max-time 5 http://127.0.0.1/ \
+        | grep -Fq '<title>Nord-Lab Hub</title>'
 }
 
 backup_database_and_files() {
@@ -462,13 +494,22 @@ run_install() {
         systemctl restart "${SERVICE_NAME}.service" || true
         fail "The application failed its health check. The previous release was restored; inspect journalctl -u nord-hub."
     fi
+    if ! verify_homepage; then
+        if [[ -n "${ORIGINAL_TARGET}" ]]; then atomic_activate_release "${ORIGINAL_TARGET}"; fi
+        systemctl restart "${SERVICE_NAME}.service" || true
+        fail "The Nord Hub homepage is not being served by Nginx on HTTP port 80. The previous release was restored; inspect the Nginx configuration."
+    fi
     if [[ -f "${STATE_DIR}/state/bootstrap-token-once" ]]; then
         printf '\nInitial account bootstrap token (shown once; keep it private):\n'
         cat "${STATE_DIR}/state/bootstrap-token-once"
         printf '\nPOST /api/v1/auth/bootstrap with this token in X-Setup-Token, then delete the token file.\n'
         rm -f -- "${STATE_DIR}/state/bootstrap-token-once"
     fi
-    log "Nord Hub installed and healthy at ${APP_BASE_URL} (release ${release_id})."
+    if [[ "${DOMAIN}" == "_" && -z "${NORDHUB_BASE_URL:-}" ]]; then
+        log "Nord Hub installed and healthy (release ${release_id}). Open http://<server-LAN-IP>/ from the test network; HTTP port 80 serves the homepage."
+    else
+        log "Nord Hub installed and healthy at ${APP_BASE_URL} (release ${release_id})."
+    fi
     if [[ "${DOMAIN}" != "_" ]]; then
         warn "HTTPS has not been enabled. Do not expose this HTTP endpoint publicly until TLS is configured."
     fi
