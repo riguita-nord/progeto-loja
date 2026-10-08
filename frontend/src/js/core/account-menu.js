@@ -54,8 +54,24 @@ export function initializeAccountMenu({ onOpenLogin }) {
     applyTheme(storedTheme());
     updateLocale();
     request('/auth/me').then(setUser).catch(() => { /* Guests must not display fictional account data. */ });
-    document.querySelector('.app-notification-button').addEventListener('click', () => {
-        // Notifications are reserved for the notification module; no fabricated notification data.
-        document.querySelector('.app-notification-button').blur();
+    const notificationButton = document.querySelector('.app-notification-button');
+    notificationButton.addEventListener('click', () => {
+        close();
+        const existing = document.querySelector('.app-notification-notice');
+        if (existing) { existing.remove(); return; }
+        const notice = document.createElement('div');
+        notice.className = 'app-notification-notice';
+        notice.setAttribute('role', 'status');
+        notice.textContent = translate('account.notificationsUnavailable');
+        notificationButton.after(notice);
+        notificationButton.setAttribute('aria-expanded', 'true');
+        notice.addEventListener('click', () => { notice.remove(); notificationButton.setAttribute('aria-expanded', 'false'); });
+        const dismiss = event => {
+            if (!notice.contains(event.target) && event.target !== notificationButton) {
+                notice.remove(); notificationButton.setAttribute('aria-expanded', 'false');
+                document.removeEventListener('pointerdown', dismiss);
+            }
+        };
+        document.addEventListener('pointerdown', dismiss);
     });
 }
