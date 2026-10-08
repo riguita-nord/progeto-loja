@@ -1,5 +1,6 @@
 import { applyTranslations, getLocale, setLocale, translate } from './i18n.js';
 import { initializeRouter } from './router.js';
+import { initializeAccountMenu } from './account-menu.js';
 
 async function loadLayout() {
     const layoutUrl = new URL('/components/app-layout.html', window.location.origin);
@@ -23,7 +24,7 @@ function initializeSharedControls() {
     const menuCloseButton = document.querySelector('.app-sidebar-close');
     const mobileBackdrop = document.querySelector('.app-sidebar-backdrop');
     const loginDialog = document.querySelector('#app-login-dialog');
-    const languageSelects = Array.from(document.querySelectorAll('.app-language-select'));
+    initializeAccountMenu({ loginDialog, onOpenLogin: () => { setMenuOpen(false); loginDialog.showModal(); document.querySelector('#app-login-email').focus(); } });
 
     function setMenuOpen(isOpen) {
         menuLinks.classList.toggle('is-open', isOpen);
@@ -63,21 +64,6 @@ function initializeSharedControls() {
     loginDialog.querySelector('form').addEventListener('submit', (event) => {
         event.preventDefault();
         loginDialog.querySelector('.app-login-message').textContent = translate('login.unavailable');
-    });
-
-    languageSelects.forEach((languageSelect) => {
-        languageSelect.replaceChildren(
-            new Option('Português', 'pt'),
-            new Option('English', 'en')
-        );
-        languageSelect.value = getLocale();
-        languageSelect.addEventListener('change', () => {
-            setLocale(languageSelect.value);
-            languageSelects.forEach((select) => {
-                select.value = languageSelect.value;
-            });
-            applyTranslations();
-        });
     });
 
     window.addEventListener('resize', () => {
