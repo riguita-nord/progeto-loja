@@ -1,0 +1,46 @@
+.app-module-page {
+    width: min(100%, 1100px);
+    box-sizing: border-box;
+    padding: clamp(28px, 6vw, 64px);
+    border: 1px solid var(--primary-soft);
+    border-radius: 32px;
+    background: var(--glass-white);
+    box-shadow: 0 24px 70px var(--shadow-soft);
+}
+
+.app-module-eyebrow {
+    color: var(--secondary-color);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.app-module-page h1 {
+    margin: 12px 0;
+    color: var(--texto-color);
+    font-size: clamp(32px, 5vw, 54px);
+}
+
+.app-module-page > p {
+    max-width: 680px;
+    color: var(--texto-color);
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0.75;
+}
+
+.app-module-empty-state {
+    margin-top: 36px;
+    padding: 22px;
+    border: 1px dashed rgba(99, 121, 242, 0.35);
+    border-radius: 18px;
+    color: var(--texto-color);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .app-module-page {
+        padding: 28px 20px;
+        border-radius: 24px;
+    }
+}

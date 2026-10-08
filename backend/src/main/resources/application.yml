@@ -1,0 +1,66 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:false}
+        same-site: lax
+      timeout: 30m
+
+spring:
+  application:
+    name: nord-hub
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/nordhub}
+    username: ${DATABASE_USERNAME:nordhub}
+    password: ${DATABASE_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${DATABASE_POOL_SIZE:10}
+      minimum-idle: 1
+      connection-timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: ${UPLOAD_MAX_FILE_SIZE:25MB}
+      max-request-size: ${UPLOAD_MAX_REQUEST_SIZE:26MB}
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+nordhub:
+  security:
+    allowed-origins: ${ALLOWED_ORIGINS:}
+  auth:
+    bootstrap-token: ${BOOTSTRAP_TOKEN:}
+    bootstrap-email: ${ADMIN_EMAIL:}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

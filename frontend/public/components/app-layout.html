@@ -1,0 +1,93 @@
+<div class="app-shell">
+    <header class="app-header">
+        <button class="app-menu-toggle" type="button" aria-expanded="false" aria-controls="app-sidebar" data-i18n-aria-label="layout.openMenu">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+        <a class="app-brand" href="/dashboard" data-app-route>
+            <img src="/assets/images/logo.svg" alt="" class="app-brand-logo">
+            <span>Nord-Lab Hub</span>
+        </a>
+        <div class="app-header-actions">
+            <label class="visually-hidden" for="desktop-language-select" data-i18n="layout.language"></label>
+            <select id="desktop-language-select" class="app-language-select desktop-language-select" aria-label="Language"></select>
+            <button class="app-user-button" type="button" aria-haspopup="dialog" aria-controls="app-login-dialog" data-i18n-aria-label="layout.signIn">
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-sidebar-backdrop" aria-hidden="true"></div>
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Navegação da aplicação">
+        <div class="app-sidebar-heading">
+            <div class="app-sidebar-brand">
+                <img src="/assets/images/logo.svg" alt="" class="app-sidebar-logo">
+                <div>
+                    <strong>Nord-Lab Hub</strong>
+                    <span data-i18n="layout.tagline"></span>
+                </div>
+            </div>
+            <button class="app-sidebar-close" type="button" data-i18n-aria-label="layout.closeMenu">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <span class="app-sidebar-label" data-i18n="layout.navigation"></span>
+        <nav class="app-navigation">
+            <a class="app-nav-link" href="/dashboard" data-app-route data-route-link="dashboard">
+                <i class="fa fa-home" aria-hidden="true"></i><span data-i18n="nav.dashboard"></span>
+            </a>
+            <a class="app-nav-link" href="/workspaces" data-app-route data-route-link="workspaces">
+                <i class="fa fa-building-o" aria-hidden="true"></i><span data-i18n="nav.workspaces"></span>
+            </a>
+            <a class="app-nav-link" href="/projects" data-app-route data-route-link="projects">
+                <i class="fa fa-cubes" aria-hidden="true"></i><span data-i18n="nav.projects"></span>
+            </a>
+            <a class="app-nav-link" href="/documentation" data-app-route data-route-link="documentation">
+                <i class="fa fa-book" aria-hidden="true"></i><span data-i18n="nav.documentation"></span>
+            </a>
+            <a class="app-nav-link" href="/files" data-app-route data-route-link="files">
+                <i class="fa fa-folder-open-o" aria-hidden="true"></i><span data-i18n="nav.files"></span>
+            </a>
+            <a class="app-nav-link" href="/calendar" data-app-route data-route-link="calendar">
+                <i class="fa fa-calendar" aria-hidden="true"></i><span data-i18n="nav.calendar"></span>
+            </a>
+            <a class="app-nav-link" href="/tasks" data-app-route data-route-link="tasks">
+                <i class="fa fa-check-square-o" aria-hidden="true"></i><span data-i18n="nav.tasks"></span>
+            </a>
+            <a class="app-nav-link" href="/settings" data-app-route data-route-link="settings">
+                <i class="fa fa-cog" aria-hidden="true"></i><span data-i18n="nav.settings"></span>
+            </a>
+        </nav>
+        <div class="app-sidebar-actions">
+            <label class="app-sidebar-label" for="mobile-language-select" data-i18n="layout.language"></label>
+            <select id="mobile-language-select" class="app-language-select" aria-label="Language"></select>
+            <button class="app-sign-in" type="button" data-open-login>
+                <i class="fa fa-user" aria-hidden="true"></i><span data-i18n="layout.signIn"></span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="app-main">
+        <div id="app-route-status" class="app-route-status" role="status" aria-live="polite" hidden></div>
+        <div id="app-route-content"></div>
+    </main>
+
+    <dialog class="app-login-dialog" id="app-login-dialog" aria-labelledby="app-login-title">
+        <div class="app-login-heading">
+            <div>
+                <span data-i18n="login.welcome"></span>
+                <h2 id="app-login-title" data-i18n="login.title"></h2>
+            </div>
+            <button type="button" data-close-login data-i18n-aria-label="layout.close">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <form class="app-login-form">
+            <label for="app-login-email" data-i18n="login.email"></label>
+            <input id="app-login-email" name="email" type="email" autocomplete="email" data-i18n-placeholder="login.emailPlaceholder" required>
+            <label for="app-login-password" data-i18n="login.password"></label>
+            <input id="app-login-password" name="password" type="password" autocomplete="current-password" data-i18n-placeholder="login.passwordPlaceholder" required>
+            <button type="submit" data-i18n="login.submit"></button>
+            <p class="app-login-message" aria-live="polite"></p>
+        </form>
+    </dialog>
+</div>

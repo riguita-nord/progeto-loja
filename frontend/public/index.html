@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f9ff">
+    <title>Nord-Lab Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/src/css/style.css?v=9">
+</head>
+<body class="public-home">
+    <header class="topbar">
+        <nav class="menu-bar" aria-label="Navegação pública">
+            <a class="logo" href="/" aria-label="Nord-Lab Hub">
+                <img src="/assets/images/logo.svg" alt="" class="logo-image">
+                <span class="logo-text">Nord-Lab Hub</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="public-navigation">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="menu-links" id="public-navigation">
+                <div class="sidebar-heading">
+                    <div class="sidebar-brand">
+                        <img src="/assets/images/logo.svg" alt="" class="sidebar-logo">
+                        <div>
+                            <strong>Nord-Lab Hub</strong>
+                            <span>Ideias que ganham vida</span>
+                        </div>
+                    </div>
+                    <button class="sidebar-close" type="button" aria-label="Fechar menu">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <span class="sidebar-section-label">NAVEGAÇÃO</span>
+                <a class="nav-link active" href="#home" aria-current="page">
+                    <i class="fa fa-home" aria-hidden="true"></i><span>Início</span><i class="fa fa-angle-right nav-chevron" aria-hidden="true"></i>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fa fa-cubes" aria-hidden="true"></i><span>Hub</span><i class="fa fa-angle-right nav-chevron" aria-hidden="true"></i>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fa fa-shopping-bag" aria-hidden="true"></i><span>Loja</span><i class="fa fa-angle-right nav-chevron" aria-hidden="true"></i>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fa fa-envelope-o" aria-hidden="true"></i><span>Contacto</span><i class="fa fa-angle-right nav-chevron" aria-hidden="true"></i>
+                </a>
+                <div class="sidebar-actions">
+                    <a class="sidebar-action sidebar-search" href="#">
+                        <i class="fa fa-search" aria-hidden="true"></i><span>Pesquisar</span>
+                    </a>
+                    <button class="sidebar-action sidebar-login" type="button" data-open-login>
+                        <i class="fa fa-user" aria-hidden="true"></i><span>Iniciar sessão</span>
+                        <i class="fa fa-arrow-right action-arrow" aria-hidden="true"></i>
+                    </button>
+                    <button class="sidebar-action" type="button" data-open-registration>
+                        <i class="fa fa-user-plus" aria-hidden="true"></i><span>Criar conta</span>
+                        <i class="fa fa-arrow-right action-arrow" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <p class="sidebar-footer">Tecnologia para novas possibilidades.</p>
+            </div>
+            <div class="menu-icons">
+                <a href="#" aria-label="Pesquisar"><i class="fa fa-search" aria-hidden="true"></i></a>
+                <button class="register-button" type="button" data-open-registration aria-haspopup="dialog" aria-controls="register-dialog">Criar conta</button>
+                <button class="user-button" type="button" aria-label="Abrir formulário de login" aria-haspopup="dialog" aria-controls="login-dialog">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <div class="mobile-sidebar-backdrop" aria-hidden="true"></div>
+    <dialog class="login-dialog" id="login-dialog" aria-labelledby="login-title">
+        <div class="login-heading">
+            <div>
+                <span class="login-label">Bem-vindo de volta</span>
+                <h2 id="login-title">Iniciar sessão</h2>
+            </div>
+            <button class="login-close" type="button" data-close-login aria-label="Fechar formulário de login">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <form class="login-form">
+            <label for="login-email">E-mail</label>
+            <input id="login-email" name="email" type="email" autocomplete="email" placeholder="nome@exemplo.com" required>
+            <label for="login-password">Palavra-passe</label>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="A tua palavra-passe" required>
+            <button class="login-submit" type="submit">Entrar</button>
+            <p class="login-message" aria-live="polite"></p>
+        </form>
+    </dialog>
+    <dialog class="register-dialog" id="register-dialog" aria-labelledby="register-title">
+        <div class="login-heading">
+            <div>
+                <span class="login-label">Junta-te ao Nord-Lab Hub</span>
+                <h2 id="register-title">Criar conta</h2>
+            </div>
+            <button class="login-close" type="button" data-close-registration aria-label="Fechar formulário de registo">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <form class="login-form">
+            <label for="register-name">Nome</label>
+            <input id="register-name" name="name" type="text" autocomplete="name" placeholder="O teu nome" required>
+            <label for="register-email">E-mail</label>
+            <input id="register-email" name="email" type="email" autocomplete="email" placeholder="nome@exemplo.com" required>
+            <label for="register-password">Palavra-passe</label>
+            <input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="Cria uma palavra-passe" required>
+            <button class="login-submit" type="submit">Criar conta</button>
+            <p class="login-message" aria-live="polite"></p>
+        </form>
+    </dialog>
+    <main id="root">
+        <section class="slideshow" id="home" aria-label="Destaques Nord-Lab">
+            <div class="slides" aria-live="polite">
+                <article class="slide active" aria-hidden="false">
+                    <span class="slide-label"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Nord-Lab Hub</span>
+                    <h1>Ideias que ganham vida com tecnologia.</h1>
+                    <p>Descobre soluções pensadas para tornar o teu dia a dia mais simples e conectado.</p>
+                    <a class="slide-cta" href="#">Descobrir mais <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="slide" aria-hidden="true">
+                    <span class="slide-label"><i class="fa fa-cubes" aria-hidden="true"></i> Soluções</span>
+                    <h1>O próximo passo começa aqui.</h1>
+                    <p>Explora ferramentas e produtos criados para acompanhar novas possibilidades.</p>
+                    <a class="slide-cta" href="#">Explorar soluções <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="slide" aria-hidden="true">
+                    <span class="slide-label"><i class="fa fa-users" aria-hidden="true"></i> Comunidade</span>
+                    <h1>Crescemos melhor em conjunto.</h1>
+                    <p>Junta-te a uma comunidade que partilha curiosidade, criatividade e vontade de criar.</p>
+                    <a class="slide-cta" href="#">Saber mais <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+            </div>
+            <div class="slideshow-controls">
+                <button class="slide-arrow" type="button" data-slide-prev aria-label="Slide anterior">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </button>
+                <div class="slide-indicators" aria-label="Escolher slide">
+                    <button class="slide-indicator active" type="button" data-slide-to="0" aria-label="Mostrar slide 1" aria-current="true"></button>
+                    <button class="slide-indicator" type="button" data-slide-to="1" aria-label="Mostrar slide 2" aria-current="false"></button>
+                    <button class="slide-indicator" type="button" data-slide-to="2" aria-label="Mostrar slide 3" aria-current="false"></button>
+                </div>
+                <button class="slide-arrow" type="button" data-slide-next aria-label="Próximo slide">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="/src/js/homepage.js?v=1"></script>
+</body>
+</html>
