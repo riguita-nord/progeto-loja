@@ -4,7 +4,7 @@ import { initializeAccountMenu } from './account-menu.js';
 
 async function loadLayout() {
     const layoutUrl = new URL('/components/app-layout.html', window.location.origin);
-    layoutUrl.searchParams.set('v', '2');
+    layoutUrl.searchParams.set('v', '3');
     const response = await fetch(layoutUrl);
     if (!response.ok) {
         throw new Error(`Could not load the main layout (HTTP ${response.status}).`);
