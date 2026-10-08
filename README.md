@@ -30,6 +30,8 @@ sudo bash ./installer/nord-hub-installer.sh doctor
 
 The installer accepts Ubuntu 24.04/26.04 on amd64/arm64, creates a non-root service account and PostgreSQL role, runs the backend tests before activation, and serves the existing frontend and API through Nginx on one origin. It preserves existing Nord Hub configuration and refuses to overwrite an unrelated Nginx site. The setup token is generated randomly and displayed only once.
 
+To configure the first administrator, open `http://<server-LAN-IP>/setup` (for example, `http://192.168.139.54/setup`) and enter the one-time setup token printed by the installer, the configured admin email, name and a password of at least 12 characters. Bootstrap is accepted only once; after it succeeds, sign in from the homepage.
+
 For private-network testing, Nginx serves the Nord Hub homepage over HTTP port 80 at `http://<server-LAN-IP>/` (for example, `http://192.168.139.54/`). The installer makes the Nord Hub site the default HTTP site so opening the machine's IP shows the homepage instead of Nginx's welcome page. On an existing Ubuntu install, rerun the updated installer with `sudo bash ./installer/nord-hub-installer.sh install`; the installer updates its managed Nginx site and verifies the homepage. The backend API listens separately on port 8080; do not use `:8080` for the website, and do not expose that backend port to the public internet because it bypasses Nginx-level request limits.
 
 Other supported commands are `update`, `status`, `restart`, `stop`, `start`, `logs`, `backup`, `restore`, and `uninstall`. Restore and uninstall require explicit confirmation. Uninstall retains configuration, database, storage and backups.

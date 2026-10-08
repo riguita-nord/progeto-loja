@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f9ff">
+    <title>Configuração inicial · Nord-Lab Hub</title>
+    <link rel="stylesheet" href="/src/css/variables.css">
+    <link rel="stylesheet" href="/src/css/pages/setup.css?v=1">
+</head>
+<body>
+    <main class="setup-card">
+        <a class="setup-brand" href="/" aria-label="Nord-Lab Hub, página inicial">
+            <img src="/assets/images/logo.svg" alt="">
+            <span>Nord-Lab Hub</span>
+        </a>
+        <span class="setup-label">Primeiro acesso</span>
+        <h1>Configurar administrador</h1>
+        <p class="setup-intro">Cria a conta inicial de administrador para ativar a plataforma.</p>
+        <form id="setup-form" class="setup-form">
+            <label for="setup-name">Nome</label>
+            <input id="setup-name" name="displayName" type="text" autocomplete="name" minlength="2" maxlength="120" placeholder="O teu nome" required>
+
+            <label for="setup-email">E-mail do administrador</label>
+            <input id="setup-email" name="email" type="email" autocomplete="email" maxlength="320" placeholder="nome@exemplo.com" required>
+
+            <label for="setup-password">Criar palavra-passe</label>
+            <input id="setup-password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" placeholder="Pelo menos 12 caracteres" required>
+
+            <label for="setup-token">Token de configuração</label>
+            <input id="setup-token" name="setupToken" type="password" autocomplete="off" placeholder="Token apresentado pelo instalador" required>
+            <p class="setup-help">Usa o token apresentado no fim da instalação. Se não o tens, pede ao administrador do servidor para o consultar.</p>
+
+            <button class="setup-submit" type="submit">Criar conta de administrador</button>
+            <p id="setup-message" class="setup-message" role="status" aria-live="polite"></p>
+        </form>
+        <a class="setup-home" href="/">Voltar à página inicial</a>
+    </main>
+    <script type="module" src="/src/js/pages/setup.js?v=1"></script>
+</body>
+</html>

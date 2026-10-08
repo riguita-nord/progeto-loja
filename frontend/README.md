@@ -3,6 +3,7 @@
 The frontend is split into two independent experiences:
 
 - `public/index.html` is the public homepage.
+- `public/setup.html` is the one-time administrator setup page served at `/setup`.
 - `public/app.html` is the entry point for the internal application.
 - `public/components/` and `public/pages/` contain the application's HTML shell and route templates.
 - `src/css/` contains the public and application stylesheets.
@@ -49,6 +50,10 @@ location = / {
     try_files /index.html =404;
 }
 
+location = /setup {
+    try_files /setup.html =404;
+}
+
 location / {
     try_files $uri $uri/ /app.html;
 }
@@ -83,6 +88,7 @@ Enable `mod_rewrite` and use the following fallback in `.htaccess` in the docume
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^/(api|src|components|pages|assets)(/|$)
 RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^setup$ setup.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ app.html [L]

@@ -281,6 +281,29 @@ UNIT
     systemctl enable "${SERVICE_NAME}.service"
 }
 
+ensure_nginx_setup_route() {
+    local updated_site
+    grep -Fq 'location = /setup {' "${NGINX_SITE}" && return 0
+
+    updated_site="$(mktemp)"
+    if ! awk '
+        !inserted && index($0, "location = / {") {
+            print "    location = /setup {"
+            print "        try_files /setup.html =404;"
+            print "    }"
+            print ""
+            inserted = 1
+        }
+        { print }
+        END { if (!inserted) exit 1 }
+    ' "${NGINX_SITE}" >"${updated_site}"; then
+        rm -f -- "${updated_site}"
+        return 1
+    fi
+    cat "${updated_site}" >"${NGINX_SITE}"
+    rm -f -- "${updated_site}"
+}
+
 install_nginx() {
     local nginx_backup="" default_site_disabled=0
     if [[ -e "${NGINX_SITE}" ]]; then
@@ -301,6 +324,11 @@ install_nginx() {
             cp -a -- "${nginx_backup}" "${NGINX_SITE}"
             rm -f -- "${nginx_backup}"
             fail "Could not configure the Nord Hub site as the default HTTP server."
+        fi
+        if ! ensure_nginx_setup_route; then
+            cp -a -- "${nginx_backup}" "${NGINX_SITE}"
+            rm -f -- "${nginx_backup}"
+            fail "Could not add the Nord Hub /setup route to Nginx."
         fi
     else
         cat >"${NGINX_SITE}" <<NGINX
@@ -375,6 +403,10 @@ limit_req_zone \$binary_remote_addr zone=nordhub_auth:10m rate=10r/m;
 
     location = / {
         try_files /index.html =404;
+    }
+
+    location = /setup {
+        try_files /setup.html =404;
     }
 
     location / {
@@ -502,7 +534,7 @@ run_install() {
     if [[ -f "${STATE_DIR}/state/bootstrap-token-once" ]]; then
         printf '\nInitial account bootstrap token (shown once; keep it private):\n'
         cat "${STATE_DIR}/state/bootstrap-token-once"
-        printf '\nPOST /api/v1/auth/bootstrap with this token in X-Setup-Token, then delete the token file.\n'
+        printf '\nOpen http://<server-LAN-IP>/setup and enter this token to create the administrator account.\n'
         rm -f -- "${STATE_DIR}/state/bootstrap-token-once"
     fi
     if [[ "${DOMAIN}" == "_" && -z "${NORDHUB_BASE_URL:-}" ]]; then
