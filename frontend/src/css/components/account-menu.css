@@ -49,3 +49,7 @@ html[data-app-theme="dark"] .app-main { color: #edf1fa; }
  .app-account-panel { position: fixed; top: 68px; right: 12px; width: min(340px, calc(100vw - 24px)); max-height: calc(100dvh - 80px); }
  .app-notification-button { width: 42px; min-height: 42px; }
 }
+
+.app-notification-notice { position: absolute; right: 12px; top: calc(100% + 8px); max-width: min(330px, calc(100vw - 24px)); padding: 14px 16px; border: 1px solid #e5eaf3; border-radius: 12px; background: #fff; box-shadow: 0 12px 30px rgba(11,24,48,.14); color: #17253c; font-size: 13px; line-height: 1.5; z-index: 91; cursor: pointer; }
+html[data-app-theme="dark"] .app-notification-notice { background: #1b2535; border-color: #344158; color: #edf1fa; }
+@media (max-width: 600px) { .app-notification-notice { right: 12px; top: calc(100% + 8px); } }
