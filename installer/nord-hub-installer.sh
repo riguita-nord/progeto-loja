@@ -165,7 +165,7 @@ ensure_environment() {
     db_password="$(openssl rand -hex 32)"
     bootstrap_token="$(openssl rand -hex 32)"
     {
-        write_environment_value SERVER_ADDRESS "127.0.0.1"
+        write_environment_value SERVER_ADDRESS "0.0.0.0"
         write_environment_value SERVER_PORT "${APP_PORT}"
         write_environment_value DATABASE_URL "jdbc:postgresql://127.0.0.1:5432/${DB_NAME}"
         write_environment_value DATABASE_USERNAME "${DB_USER}"

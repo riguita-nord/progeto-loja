@@ -15,7 +15,7 @@ sh ./mvnw spring-boot:run
 
 On Windows, use `mvnw.cmd`. The first wrapper run downloads the pinned Maven distribution and verifies its SHA-256 checksum. A local PostgreSQL database is required for the application and integration tests.
 
-The server binds to `127.0.0.1:8080` by default. Flyway applies versioned schema migrations; Hibernate validates the schema and never updates it automatically. Configure a strong, private `BOOTSTRAP_TOKEN` before starting an empty database.
+The server binds to `0.0.0.0:8080` by default so it can be reached from other devices on a private test network. Connect using the machine's LAN IP (for example, `http://192.168.1.20:8080`), not `0.0.0.0`. Set `SERVER_ADDRESS=127.0.0.1` to restrict the backend to local connections, such as when it is only meant to be reached through Nginx. Binding to all interfaces exposes the backend port directly and bypasses Nginx-level request limits; do not expose it to the public internet, and restrict port 8080 to your test network in the host firewall. Flyway applies versioned schema migrations; Hibernate validates the schema and never updates it automatically. Configure a strong, private `BOOTSTRAP_TOKEN` before starting an empty database.
 
 ## Initial account
 
