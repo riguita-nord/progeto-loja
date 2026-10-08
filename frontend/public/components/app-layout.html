@@ -8,11 +8,37 @@
             <span>Nord-Lab Hub</span>
         </a>
         <div class="app-header-actions">
-            <label class="visually-hidden" for="desktop-language-select" data-i18n="layout.language"></label>
-            <select id="desktop-language-select" class="app-language-select desktop-language-select" aria-label="Language"></select>
-            <button class="app-user-button" type="button" aria-haspopup="dialog" aria-controls="app-login-dialog" data-i18n-aria-label="layout.signIn">
-                <i class="fa fa-user" aria-hidden="true"></i>
+            <button class="app-notification-button" type="button" aria-label="" data-i18n-aria-label="account.notifications" aria-haspopup="false">
+                <i class="fa fa-bell-o" aria-hidden="true"></i>
             </button>
+            <div class="app-account">
+                <button class="app-account-trigger" type="button" aria-expanded="false" aria-controls="app-account-panel" data-i18n-aria-label="account.open">
+                    <span class="app-account-avatar" aria-hidden="true"><i class="fa fa-user"></i></span>
+                    <span class="app-account-trigger-copy"><strong class="app-account-name" data-i18n="account.guest"></strong><small class="app-account-role" data-i18n="account.signedOut"></small></span>
+                    <i class="fa fa-angle-down app-account-chevron" aria-hidden="true"></i>
+                </button>
+                <section id="app-account-panel" class="app-account-panel" aria-label="" data-i18n-aria-label="account.menu" hidden>
+                    <div class="app-account-card">
+                        <span class="app-account-avatar app-account-avatar-large" aria-hidden="true"><i class="fa fa-user"></i></span>
+                        <span class="app-account-card-copy"><strong class="app-account-card-name" data-i18n="account.guest"></strong><small class="app-account-card-email" data-i18n="account.signedOut"></small></span>
+                    </div>
+                    <div class="app-account-section">
+                        <span class="app-account-label" data-i18n="account.account"></span>
+                        <button class="app-account-item" type="button" data-account-login><i class="fa fa-sign-in" aria-hidden="true"></i><span data-i18n="layout.signIn"></span><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                        <a class="app-account-item" href="/settings" data-app-route data-account-settings><i class="fa fa-cog" aria-hidden="true"></i><span data-i18n="account.settings"></span><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="app-account-section">
+                        <span class="app-account-label" data-i18n="account.preferences"></span>
+                        <div class="app-account-preference"><span><i class="fa fa-language" aria-hidden="true"></i><span data-i18n="account.language"></span></span><div class="app-account-segments" role="group" data-i18n-aria-label="account.language"><button type="button" data-account-locale="pt">PT</button><button type="button" data-account-locale="en">EN</button></div></div>
+                        <div class="app-account-preference"><span><i class="fa fa-adjust" aria-hidden="true"></i><span data-i18n="account.appearance"></span></span><div class="app-account-segments" role="group" data-i18n-aria-label="account.appearance"><button type="button" data-account-theme="light" data-i18n="account.light"></button><button type="button" data-account-theme="dark" data-i18n="account.dark"></button></div></div>
+                    </div>
+                    <div class="app-account-section app-account-footer">
+                        <button class="app-account-item" type="button" data-account-refresh><i class="fa fa-refresh" aria-hidden="true"></i><span data-i18n="account.refresh"></span></button>
+                        <button class="app-account-item app-account-logout" type="button" data-account-logout hidden><i class="fa fa-sign-out" aria-hidden="true"></i><span data-i18n="account.logout"></span></button>
+                        <p class="app-account-error" role="status" aria-live="polite" hidden></p>
+                    </div>
+                </section>
+            </div>
         </div>
     </header>
 
@@ -57,13 +83,6 @@
                 <i class="fa fa-cog" aria-hidden="true"></i><span data-i18n="nav.settings"></span>
             </a>
         </nav>
-        <div class="app-sidebar-actions">
-            <label class="app-sidebar-label" for="mobile-language-select" data-i18n="layout.language"></label>
-            <select id="mobile-language-select" class="app-language-select" aria-label="Language"></select>
-            <button class="app-sign-in" type="button" data-open-login>
-                <i class="fa fa-user" aria-hidden="true"></i><span data-i18n="layout.signIn"></span>
-            </button>
-        </div>
     </aside>
 
     <main class="app-main">
