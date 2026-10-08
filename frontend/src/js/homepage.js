@@ -6,6 +6,12 @@ const sidebarClose = document.querySelector('.sidebar-close');
 const backdrop = document.querySelector('.mobile-sidebar-backdrop');
 const loginDialog = document.querySelector('#login-dialog');
 const registrationDialog = document.querySelector('#register-dialog');
+const registrationForm = registrationDialog.querySelector('form');
+const registrationTitle = registrationDialog.querySelector('#register-title');
+const setupToggle = registrationForm.querySelector('[data-toggle-initial-setup]');
+const setupFields = registrationForm.querySelector('[data-initial-setup]');
+const setupTokenInput = registrationForm.elements.setupToken;
+let isInitialSetup = false;
 const loginButtons = document.querySelectorAll('.user-button, [data-open-login]');
 const registrationButtons = document.querySelectorAll('[data-open-registration]');
 const slides = Array.from(document.querySelectorAll('.slide'));
@@ -87,7 +93,27 @@ function setFormBusy(form, isBusy) {
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = isBusy;
     submit.setAttribute('aria-busy', String(isBusy));
+    setupToggle.disabled = isBusy;
 }
+
+function setInitialSetupMode(enabled) {
+    isInitialSetup = enabled;
+    setupFields.hidden = !enabled;
+    setupTokenInput.required = enabled;
+    registrationTitle.textContent = enabled ? 'Configurar administrador' : 'Criar conta';
+    setupToggle.textContent = enabled
+        ? 'Já tens administrador? Voltar ao registo'
+        : 'Primeiro acesso? Configurar conta de administrador';
+    registrationForm.querySelector('[type="submit"]').textContent = enabled
+        ? 'Criar conta de administrador'
+        : 'Criar conta';
+    registrationForm.querySelector('.login-message').textContent = '';
+}
+
+setupToggle.addEventListener('click', () => {
+    setInitialSetupMode(!isInitialSetup);
+    if (isInitialSetup) setupTokenInput.focus();
+});
 
 loginDialog.addEventListener('click', (event) => {
     if (event.target === loginDialog) loginDialog.close();
@@ -116,7 +142,7 @@ loginDialog.querySelector('form').addEventListener('submit', (event) => {
         setFormBusy(form, false);
     });
 });
-registrationDialog.querySelector('form').addEventListener('submit', (event) => {
+registrationForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const message = form.querySelector('.login-message');
@@ -124,8 +150,9 @@ registrationDialog.querySelector('form').addEventListener('submit', (event) => {
     const email = values.get('email');
     message.textContent = '';
     setFormBusy(form, true);
-    request('/auth/register', {
+    request(isInitialSetup ? '/auth/bootstrap' : '/auth/register', {
         method: 'POST',
+        headers: isInitialSetup ? { 'X-Setup-Token': values.get('setupToken') } : undefined,
         body: JSON.stringify({
             displayName: values.get('name'),
             email,
@@ -133,13 +160,23 @@ registrationDialog.querySelector('form').addEventListener('submit', (event) => {
         })
     }).then(() => {
         registrationDialog.close();
+        setInitialSetupMode(false);
         const loginForm = loginDialog.querySelector('form');
         loginForm.elements.email.value = email;
         loginForm.querySelector('.login-message').textContent = 'Conta criada com sucesso. Inicia sessão com a tua palavra-passe.';
         loginDialog.showModal();
         loginForm.elements.password.focus();
     }).catch((error) => {
-        message.textContent = displayAuthError(error, 'register');
+        if (!isInitialSetup && error instanceof ApiError
+                && error.status === 409 && error.message.includes('Initial account setup')) {
+            setInitialSetupMode(true);
+            message.textContent = 'A configuração inicial ainda não foi feita. Introduz o token mostrado pelo instalador para criar o administrador.';
+            setupTokenInput.focus();
+            return;
+        }
+        message.textContent = isInitialSetup && error instanceof ApiError && error.status === 401
+            ? 'Token inválido, email não autorizado ou configuração já concluída. Confirma o token e o email de administrador.'
+            : displayAuthError(error, 'register');
     }).finally(() => {
         setFormBusy(form, false);
     });

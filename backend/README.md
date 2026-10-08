@@ -19,7 +19,7 @@ The backend binds to `0.0.0.0:8080` by default for private-network testing. On t
 
 ## Initial account
 
-The installer generates a random one-time setup token and displays it once. Use `POST /api/v1/auth/bootstrap` with `X-Setup-Token` and a JSON body containing `email`, `displayName`, and a password of at least 12 characters. When `ADMIN_EMAIL` was configured during installation, the request must use that email. The token is accepted only until the first user is created and the bootstrap marker is committed.
+The installer generates a random setup token and displays it after installation. On the homepage, choose **Criar conta** and then **Primeiro acesso? Configurar conta de administrador**. Enter the name, configured administrator email, a password of at least 12 characters, and the token. If the output was lost, retrieve the token on the server with `sudo grep '^BOOTSTRAP_TOKEN=' /etc/nord-hub/nord-hub.env`; keep it private. The equivalent API is `POST /api/v1/auth/bootstrap` with the token in `X-Setup-Token` and a JSON body containing `email`, `displayName`, and `password`. When `ADMIN_EMAIL` was configured during installation, the request must use that email. The token is accepted only until the first user is created and the bootstrap marker is committed.
 
 After setup, public account registration is available at `POST /api/v1/auth/register`. Authentication uses server-side sessions, HttpOnly cookies, CSRF tokens, and Argon2id password hashes. The login endpoint applies a 15-minute account lock after five consecutive bad-password attempts. Password recovery, SMTP verification and broader IP-based rate limiting are not implemented yet.
 

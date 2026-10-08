@@ -76,6 +76,29 @@
     box-shadow: 0 0 0 3px var(--secondary-soft);
 }
 
+.login-form [hidden] {
+    display: none;
+}
+
+.auth-mode-toggle {
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: var(--secondary-color);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.setup-token-help {
+    display: block;
+    margin-top: 8px;
+    color: var(--secondary-color);
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
 .login-submit {
     margin-top: 14px;
     padding: 13px 18px;

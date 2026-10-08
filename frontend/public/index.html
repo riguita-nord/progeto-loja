@@ -105,6 +105,12 @@
             <input id="register-email" name="email" type="email" autocomplete="email" placeholder="nome@exemplo.com" required>
             <label for="register-password">Palavra-passe</label>
             <input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="Cria uma palavra-passe" minlength="12" maxlength="128" required>
+            <button class="auth-mode-toggle" type="button" data-toggle-initial-setup>Primeiro acesso? Configurar conta de administrador</button>
+            <div data-initial-setup hidden>
+                <label for="register-setup-token">Token de configuração</label>
+                <input id="register-setup-token" name="setupToken" type="password" autocomplete="off" placeholder="Token apresentado pelo instalador">
+                <small class="setup-token-help">Se não guardaste o token, consulta-o no servidor com: sudo grep '^BOOTSTRAP_TOKEN=' /etc/nord-hub/nord-hub.env</small>
+            </div>
             <button class="login-submit" type="submit">Criar conta</button>
             <p class="login-message" aria-live="polite"></p>
         </form>
