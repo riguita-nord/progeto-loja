@@ -28,7 +28,7 @@ const messages = {
         },
         account: {
             menu: 'Account menu', open: 'Open account menu', guest: 'Guest', signedOut: 'Not signed in',
-            notifications: 'Notifications', account: 'ACCOUNT', settings: 'Settings', preferences: 'PREFERENCES',
+            notifications: 'Notifications', notificationsUnavailable: 'Notifications will be available when this module is connected.', account: 'ACCOUNT', settings: 'Settings', preferences: 'PREFERENCES',
             language: 'Language', appearance: 'Appearance', light: 'Light', dark: 'Dark',
             refresh: 'Refresh application', logout: 'Sign out', error: 'Could not complete this action.'
         },
@@ -110,7 +110,7 @@ const messages = {
         },
         account: {
             menu: 'Menu da conta', open: 'Abrir menu da conta', guest: 'Visitante', signedOut: 'Sessão não iniciada',
-            notifications: 'Notificações', account: 'CONTA', settings: 'Definições', preferences: 'PREFERÊNCIAS',
+            notifications: 'Notificações', notificationsUnavailable: 'As notificações estarão disponíveis quando este módulo estiver ligado.', account: 'CONTA', settings: 'Definições', preferences: 'PREFERÊNCIAS',
             language: 'Idioma', appearance: 'Aparência', light: 'Claro', dark: 'Escuro',
             refresh: 'Atualizar aplicação', logout: 'Terminar sessão', error: 'Não foi possível concluir esta ação.'
         },
