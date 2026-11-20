@@ -235,7 +235,10 @@ BEGIN
 END
 \$setup\$;
 SQL
-    runuser -u postgres -- psql --set ON_ERROR_STOP=1 --file="${DB_SQL_TEMP}"
+    # Let the root shell open the protected SQL file, then pass it over stdin.
+    # The postgres account cannot traverse the root-owned 0750 state directory
+    # or read this 0600 file, and must not be granted broader access.
+    runuser -u postgres -- psql --set ON_ERROR_STOP=1 <"${DB_SQL_TEMP}"
     rm -f -- "${DB_SQL_TEMP}"
     DB_SQL_TEMP=""
     if ! runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1; then
