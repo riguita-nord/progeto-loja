@@ -106,13 +106,32 @@ validate_settings() {
 }
 
 collect_settings() {
+    # Preserve an existing administrator during repair/reinstall without
+    # requiring the operator to re-enter an email on every run.
+    if [[ -f "${CONFIG_FILE}" ]]; then
+        [[ "$(stat -c '%a' "${CONFIG_FILE}")" == "600" ]] \
+            || fail "${CONFIG_FILE} exists with unsafe permissions. Set it to mode 600 before continuing."
+        local configured_admin
+        configured_admin="$( (source "${CONFIG_FILE}"; printf '%s' "${ADMIN_EMAIL:-}") )"
+        ADMIN_EMAIL="${ADMIN_EMAIL:-${configured_admin}}"
+    fi
     if [[ -t 0 ]]; then
         local answer
-        read -r -p "Domain (blank for local HTTP only): " answer
-        DOMAIN="${answer:-_}"
-        read -r -p "Internal application port [8080]: " answer
-        APP_PORT="${answer:-8080}"
-        read -r -p "Initial administrator email (required; bootstrap token will be printed once): " ADMIN_EMAIL
+        if [[ -z "${NORDHUB_DOMAIN:-}" ]]; then
+            read -r -p "Domain (blank for local HTTP only): " answer
+            DOMAIN="${answer:-_}"
+        fi
+        if [[ -z "${NORDHUB_PORT:-}" ]]; then
+            read -r -p "Internal application port [${APP_PORT}]: " answer
+            APP_PORT="${answer:-${APP_PORT}}"
+        fi
+        if [[ -z "${ADMIN_EMAIL}" ]]; then
+            while [[ -z "${ADMIN_EMAIL}" ]]; do
+                read -r -p "Initial administrator email (required; bootstrap token will be printed once): " ADMIN_EMAIL \
+                    || fail "No administrator email provided. Set NORDHUB_ADMIN_EMAIL and retry."
+                [[ -n "${ADMIN_EMAIL}" ]] || warn "Administrator email cannot be blank."
+            done
+        fi
     fi
     validate_settings
     [[ -n "${ADMIN_EMAIL}" ]] || fail "An initial administrator email is required. Set NORDHUB_ADMIN_EMAIL for non-interactive installation."
@@ -609,31 +628,38 @@ run_doctor() {
     require_root
     local failed=0
     check_result() {
-        if "$@"; then log "OK: $1"; else warn "FAIL: $1"; failed=1; fi
+        local label="$1"
+        shift
+        if "$@" >/dev/null 2>&1; then
+            log "OK: ${label}"
+        else
+            warn "FAIL: ${label}"
+            failed=1
+        fi
     }
-    check_result command -v java
+    check_result "Java executable" command -v java
     if command -v java >/dev/null && java -version 2>&1 | grep -q '21\.'; then
         log "OK: Java 21 runtime"
     else
         warn "FAIL: Java 21 runtime"
         failed=1
     fi
-    check_result systemctl is-active --quiet "${SERVICE_NAME}.service"
-    check_result systemctl is-active --quiet postgresql
-    check_result systemctl is-active --quiet nginx
+    check_result "Nord Hub service (${SERVICE_NAME}.service)" systemctl is-active --quiet "${SERVICE_NAME}.service"
+    check_result "PostgreSQL service" systemctl is-active --quiet postgresql
+    check_result "Nginx service" systemctl is-active --quiet nginx
     if [[ -f "${CONFIG_FILE}" ]]; then
         [[ "$(stat -c '%a' "${CONFIG_FILE}")" == "600" ]] && log "OK: restricted environment file" \
             || { warn "FAIL: environment file permissions"; failed=1; }
         # shellcheck disable=SC1090
         source "${CONFIG_FILE}"
-        check_result curl --fail --silent --max-time 3 "http://127.0.0.1:${SERVER_PORT:-8080}/actuator/health"
+        check_result "Nord Hub API health on port ${SERVER_PORT:-8080}" curl --fail --silent --max-time 3 "http://127.0.0.1:${SERVER_PORT:-8080}/actuator/health"
     else
         warn "FAIL: ${CONFIG_FILE} is missing"
         failed=1
     fi
-    check_result test -d "${INSTALL_ROOT}/shared/storage"
-    check_result test -d "${BACKUP_DIR}"
-    check_result test -w "${INSTALL_ROOT}/shared/storage"
+    check_result "storage directory" test -d "${INSTALL_ROOT}/shared/storage"
+    check_result "backup directory" test -d "${BACKUP_DIR}"
+    check_result "writable storage directory" test -w "${INSTALL_ROOT}/shared/storage"
     df -h /opt /var/lib/nord-hub
     (( failed == 0 )) || return 1
 }
